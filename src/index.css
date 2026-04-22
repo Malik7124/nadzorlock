@@ -50,6 +50,17 @@ html, body, #root {
   font-family: inherit;
   outline: none;
 }
+/* Убираем focus-outline (белые рамки) на SVG-полигонах и маркерах после клика */
+.leaflet-container path,
+.leaflet-container path:focus,
+.leaflet-container path:focus-visible,
+.leaflet-interactive,
+.leaflet-interactive:focus,
+.leaflet-interactive:focus-visible,
+.leaflet-marker-icon,
+.leaflet-marker-icon:focus {
+  outline: none !important;
+}
 .leaflet-popup-content-wrapper {
   background: var(--panel-2);
   color: var(--text);

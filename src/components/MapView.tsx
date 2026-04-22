@@ -40,23 +40,29 @@ function FocusController() {
 
   useEffect(() => {
     if (!focusTarget) return;
-    // Останавливаем текущую анимацию, чтобы новая не «дёргала» карту.
+    // map.stop() — гасим текущую анимацию перед новой.
     map.stop();
-    const opts = { duration: 0.7, easeLinearity: 0.25 };
+    // Используем setView с panAnimation вместо flyTo: flyTo по алгоритму
+    // Van Wijk сначала отзумируется, перелетает, потом зумируется обратно —
+    // на больших расстояниях это выглядит как «уехал не туда и вернулся».
+    const animOpts = { animate: true, duration: 0.55, easeLinearity: 0.4 };
+
     if (focusTarget.kind === "all") {
-      map.flyTo([62, 95], 3.2, opts);
+      map.setView([62, 95], 3.2, animOpts);
       return;
     }
     if (focusTarget.kind === "district" && focusTarget.id) {
       const b = getDistrictBounds(focusTarget.id);
       if (b) {
-        map.flyToBounds(b, { padding: [40, 40], maxZoom: 6, ...opts });
+        // Считаем оптимальный zoom под bounds сами и едем напрямую.
+        const z = Math.min(6, map.getBoundsZoom(b, false, [40, 40] as any));
+        map.setView(b.getCenter(), z, animOpts);
       }
       return;
     }
     if (focusTarget.kind === "unit" && focusTarget.id) {
       const u = UNITS.find((x) => x.id === focusTarget.id);
-      if (u) map.flyTo(u.coords, 9, opts);
+      if (u) map.setView(u.coords, 9, animOpts);
     }
   }, [focusTarget, map]);
 
