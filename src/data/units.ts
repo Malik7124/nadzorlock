@@ -466,7 +466,7 @@ export const UNITS: Unit[] = [
   mk({
     number: "83799", fullName: "Управление условной общевойсковой армии «А-7»",
     branch: "Управление", subordination: "ЮВО",
-    district: "YVO", garrison: "Донецкий", region: "Донецкая Народная Республика",
+    district: "OGV", garrison: "Донецкий", region: "Донецкая Народная Республика",
     city: "Донецк", address: "283ХХХ, г. Донецк, Условная ул., д. 00, в/ч 83799",
     postalIndex: "283ХХХ", coords: [48.0159, 37.8028],
     commander: "генерал-лейтенант А. Н. Завизионный", chiefOfStaff: "генерал-майор Д. П. Ляминский",

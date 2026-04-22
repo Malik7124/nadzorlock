@@ -20,29 +20,43 @@ function makeMarkerIcon(color: string, label: string, active: boolean, showLabel
   });
 }
 
+// Кэшируем bounds полигонов один раз — пересчёт через L.geoJSON()
+// на каждый клик заметно лагает.
+const districtBoundsCache: Record<string, L.LatLngBounds> = {};
+function getDistrictBounds(code: string): L.LatLngBounds | null {
+  if (districtBoundsCache[code]) return districtBoundsCache[code];
+  const feat = districtsGeoJSON.features.find(
+    (f: any) => f.properties.code === code
+  );
+  if (!feat) return null;
+  const b = L.geoJSON(feat as any).getBounds();
+  districtBoundsCache[code] = b;
+  return b;
+}
+
 function FocusController() {
   const map = useMap();
   const { focusTarget } = useApp();
 
   useEffect(() => {
     if (!focusTarget) return;
+    // Останавливаем текущую анимацию, чтобы новая не «дёргала» карту.
+    map.stop();
+    const opts = { duration: 0.7, easeLinearity: 0.25 };
     if (focusTarget.kind === "all") {
-      map.flyTo([62, 95], 3.2, { duration: 0.9 });
+      map.flyTo([62, 95], 3.2, opts);
       return;
     }
     if (focusTarget.kind === "district" && focusTarget.id) {
-      const feat = districtsGeoJSON.features.find(
-        (f: any) => f.properties.code === focusTarget.id
-      );
-      if (feat) {
-        const layer = L.geoJSON(feat as any);
-        map.flyToBounds(layer.getBounds(), { padding: [40, 40], duration: 0.9, maxZoom: 6 });
+      const b = getDistrictBounds(focusTarget.id);
+      if (b) {
+        map.flyToBounds(b, { padding: [40, 40], maxZoom: 6, ...opts });
       }
       return;
     }
     if (focusTarget.kind === "unit" && focusTarget.id) {
       const u = UNITS.find((x) => x.id === focusTarget.id);
-      if (u) map.flyTo(u.coords, 9, { duration: 0.9 });
+      if (u) map.flyTo(u.coords, 9, opts);
     }
   }, [focusTarget, map]);
 
@@ -186,7 +200,9 @@ export function MapView() {
     });
   }, [districtFilter]);
 
-  const russiaBounds = L.latLngBounds([[40, 18], [82, 190]]);
+  // Bounds расширены за реальные границы РФ с запасом, чтобы во время
+  // flyTo / flyToBounds карта не «отбрасывалась» обратно к центру.
+  const russiaBounds = L.latLngBounds([[20, 0], [85, 200]]);
 
   return (
     <div className="relative flex-1 h-full">
@@ -199,7 +215,7 @@ export function MapView() {
         attributionControl={false}
         worldCopyJump={false}
         maxBounds={russiaBounds}
-        maxBoundsViscosity={0.9}
+        maxBoundsViscosity={0.3}
         className="h-full w-full"
       >
         <TileLayer

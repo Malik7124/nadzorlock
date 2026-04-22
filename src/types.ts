@@ -1,4 +1,4 @@
-export type DistrictCode = "LVO" | "MVO" | "YVO" | "CVO" | "VVO";
+export type DistrictCode = "LVO" | "MVO" | "YVO" | "CVO" | "VVO" | "OGV";
 
 export interface District {
   code: DistrictCode;

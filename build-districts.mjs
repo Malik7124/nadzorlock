@@ -34,14 +34,17 @@ const mapping = {
   ],
 };
 
-// Реальные контуры новых регионов РФ загружены из открытого источника
-// (github.com/EugeneBorshch/ukraine_geojson, ODbL) и включены в состав ЮВО.
+// Реальные контуры регионов загружены из открытого источника
+// (github.com/EugeneBorshch/ukraine_geojson, ODbL).
+// Крым относится к ЮВО, четыре новых субъекта — к ОГВ(с) (Объединённой группировке войск).
 const extraYVOFiles = [
+  "./ua_regions/UA_43_Krym.geojson",
+];
+const extraOGVFiles = [
   "./ua_regions/UA_09_Luhanska.geojson",
   "./ua_regions/UA_14_Donetska.geojson",
   "./ua_regions/UA_23_Zaporizka.geojson",
   "./ua_regions/UA_65_Khersonska.geojson",
-  "./ua_regions/UA_43_Krym.geojson",
 ];
 // Нормализация: часть файлов в источнике содержит несколько независимых
 // кусков суши как «кольца» внутри одного Polygon (а должно быть MultiPolygon).
@@ -60,16 +63,20 @@ function normalizeFeat(feat) {
   return feat;
 }
 
-const extraYVO = extraYVOFiles.map((p) => {
-  const feat = normalizeFeat(JSON.parse(fs.readFileSync(p, "utf8")));
-  try {
-    const clipped = turf.bboxClip(feat, [-179.9, 40, 179.9, 82]);
-    const buffered = turf.buffer(clipped, 3, { units: "kilometers" }) || clipped;
-    return buffered;
-  } catch {
-    return feat;
-  }
-});
+function loadExtras(files) {
+  return files.map((p) => {
+    const feat = normalizeFeat(JSON.parse(fs.readFileSync(p, "utf8")));
+    try {
+      const clipped = turf.bboxClip(feat, [-179.9, 40, 179.9, 82]);
+      const buffered = turf.buffer(clipped, 3, { units: "kilometers" }) || clipped;
+      return buffered;
+    } catch {
+      return feat;
+    }
+  });
+}
+const extraYVO = loadExtras(extraYVOFiles);
+const extraOGV = loadExtras(extraOGVFiles);
 
 // (старые хардкоженные полигоны больше не используются)
 const _unused_extraYVO = [
@@ -257,7 +264,7 @@ for (const [code] of Object.entries(mapping)) {
   };
 }
 
-// Add extras to YVO (реальные GeoJSON-фичи из загруженных файлов)
+// Add extras to YVO (Крым)
 if (extraYVO.length) {
   const basePolys = toPC(districts.YVO.geometry);
   const extras = extraYVO.map((f) => toPC(f.geometry));
@@ -267,12 +274,27 @@ if (extraYVO.length) {
     : { type: "MultiPolygon", coordinates: combined };
 }
 
+// ОГВ(с) — отдельный «округ» из 4 новых субъектов РФ
+if (extraOGV.length) {
+  const polys = extraOGV.map((f) => toPC(f.geometry));
+  const unioned = polygonClipping.union(...polys);
+  districts.OGV = {
+    type: "Feature",
+    properties: { code: "OGV" },
+    geometry: unioned.length === 1
+      ? { type: "Polygon", coordinates: unioned[0] }
+      : { type: "MultiPolygon", coordinates: unioned },
+  };
+  console.log("OGV: 4 regions merged");
+}
+
 const meta = {
   LVO: { code: "LVO", name: "Ленинградский военный округ", short: "ЛВО", color: "#4a90d9", hq: "Санкт-Петербург" },
   MVO: { code: "MVO", name: "Московский военный округ", short: "МВО", color: "#9b7bc4", hq: "Москва" },
   YVO: { code: "YVO", name: "Южный военный округ", short: "ЮВО", color: "#c14b3a", hq: "Ростов-на-Дону" },
   CVO: { code: "CVO", name: "Центральный военный округ", short: "ЦВО", color: "#4d9e73", hq: "Екатеринбург" },
   VVO: { code: "VVO", name: "Восточный военный округ", short: "ВВО", color: "#c9a961", hq: "Хабаровск" },
+  OGV: { code: "OGV", name: "Объединённая группировка войск (сил)", short: "ОГВ(с)", color: "#d97a4a", hq: "—" },
 };
 
 const out = {
