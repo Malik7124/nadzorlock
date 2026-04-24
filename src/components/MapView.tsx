@@ -170,7 +170,7 @@ function MarkerClusterLayer({
         zIndexOffset: active ? 1000 : 0,
       });
       marker.bindPopup(
-        `<div><div class="mono" style="font-weight:700;color:#fff;font-size:13px">в/ч ${u.number}</div>
+        `<div><div class="mono" style="font-weight:700;color:#fff;font-size:13px">в/ч •••••</div>
          <div style="opacity:0.85;margin-top:2px">${u.fullName}</div>
          <div style="opacity:0.65;font-size:11px;margin-top:4px">${u.city} · ${u.garrison} гарнизон</div></div>`
       );

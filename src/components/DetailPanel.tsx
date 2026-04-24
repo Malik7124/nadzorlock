@@ -69,7 +69,7 @@ export function DetailPanel() {
             </div>
 
             <div className="mono text-[28px] font-bold tracking-tight leading-none text-[var(--text)]">
-              в/ч {u.number}
+              в/ч •••••
             </div>
             <div className="text-[13px] text-[var(--text-dim)] mt-2 leading-snug">
               {u.fullName}
@@ -90,7 +90,7 @@ export function DetailPanel() {
 
         <div className="flex-1 overflow-y-auto scrollbar-thin p-5">
           <Section icon={Shield} title="Идентификация">
-            <KV k="Условный номер" v={`в/ч ${u.number}`} />
+            <KV k="Условный номер" v={`в/ч •••••`} />
             <KV k="Наименование" v={u.fullName} />
             <KV k="Род войск / тип" v={u.branch} />
             <KV k="Подчинённость" v={u.subordination} />

@@ -58,7 +58,7 @@ export function SelectionPanel() {
             <span className="text-[11px] text-slate-400">{u.garrison} гарнизон</span>
           </div>
           <div className="mt-2 font-mono text-2xl font-bold tracking-tight text-white">
-            в/ч {u.number}
+            в/ч •••••
           </div>
           <div className="text-sm text-slate-300 leading-snug mt-0.5">{u.fullName}</div>
 

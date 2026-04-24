@@ -32,7 +32,6 @@ export default function App() {
       if (districtFilter && u.district !== districtFilter) return false;
       if (!q) return true;
       return (
-        u.number.toLowerCase().includes(q) ||
         u.city.toLowerCase().includes(q) ||
         u.garrison.toLowerCase().includes(q)
       );

@@ -35,7 +35,6 @@ export function Sidebar() {
     if (!query.trim()) return [];
     const q = query.trim().toLowerCase();
     return UNITS.filter((u) =>
-      u.number.toLowerCase().includes(q) ||
       u.city.toLowerCase().includes(q) ||
       u.garrison.toLowerCase().includes(q)
     ).slice(0, 6);
@@ -60,7 +59,7 @@ export function Sidebar() {
     const first = filteredUnits[0];
     setSelectedUnitId(first.id);
     focus({ kind: "unit", id: first.id });
-    pushToast("success", `Найдено ${filteredUnits.length} — переход к в/ч ${first.number}`);
+    pushToast("success", `Найдено ${filteredUnits.length} — переход к ${first.city}`);
     setShowSuggest(false);
   };
 
@@ -127,7 +126,7 @@ export function Sidebar() {
                 />
                 <div className="min-w-0 flex-1">
                   <div className="text-[13px] font-mono font-semibold text-white">
-                    в/ч {highlight(u.number, query)}
+                    в/ч •••••
                   </div>
                   <div className="text-[11px] text-slate-400 truncate">
                     {highlight(u.city, query)} · {highlight(u.garrison, query)} гарнизон
@@ -213,7 +212,7 @@ export function Sidebar() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
                       <div className="font-mono text-sm font-bold text-white">
-                        {highlight(u.number, query)}
+                        •••••
                       </div>
                       <div className="text-[10px] uppercase text-slate-500 tracking-wider">
                         {d.short}

@@ -34,7 +34,6 @@ export function LeftRail() {
     if (!query.trim()) return [];
     const q = query.trim().toLowerCase();
     return UNITS.filter((u) =>
-      u.number.toLowerCase().includes(q) ||
       u.city.toLowerCase().includes(q) ||
       u.garrison.toLowerCase().includes(q)
     ).slice(0, 7);
@@ -102,7 +101,7 @@ export function LeftRail() {
                   <span className="w-0.5 self-stretch" style={{ background: d.color }} />
                   <div className="min-w-0 flex-1">
                     <div className="mono text-[12px] font-bold text-[var(--text)]">
-                      {hl(u.number, query)}
+                      в/ч •••••
                     </div>
                     <div className="text-[11px] text-[var(--text-dim)] truncate">
                       {hl(u.city, query)} · {hl(u.garrison, query)}
@@ -177,7 +176,7 @@ export function LeftRail() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
                       <div className="mono text-[13px] font-bold text-[var(--text)]">
-                        {hl(u.number, query)}
+                        в/ч •••••
                       </div>
                       <div className="label text-[9px]" style={{ color: d.color }}>{d.short}</div>
                     </div>

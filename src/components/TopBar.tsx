@@ -3,13 +3,14 @@ import { DISTRICTS } from "../data/districts";
 import { UNITS } from "../data/units";
 import { useApp } from "../state";
 import { Emblem } from "./Emblem";
+import { MASK } from "../utils/mask";
 
 export function TopBar() {
   const { selectedUnitId, districtFilter, filteredUnits, resetAll } = useApp();
   const selectedUnit = UNITS.find((u) => u.id === selectedUnitId);
 
   const selectionLabel = selectedUnit
-    ? `в/ч ${selectedUnit.number}`
+    ? `в/ч ${MASK}`
     : districtFilter
     ? DISTRICTS[districtFilter].short
     : "—";

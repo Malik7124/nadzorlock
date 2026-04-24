@@ -2,12 +2,13 @@ import { Layers, MapPin, Target } from "lucide-react";
 import { DISTRICTS } from "../data/districts";
 import { UNITS } from "../data/units";
 import { useApp } from "../state";
+import { MASK } from "../utils/mask";
 
 export function StatusBar() {
   const { selectedUnitId, districtFilter, filteredUnits } = useApp();
   const selectedUnit = UNITS.find((u) => u.id === selectedUnitId);
   const selectionLabel = selectedUnit
-    ? `в/ч ${selectedUnit.number}`
+    ? `в/ч ${MASK}`
     : districtFilter
     ? DISTRICTS[districtFilter].short
     : "—";
