@@ -1,12 +1,14 @@
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Sun, Moon } from "lucide-react";
 import { DISTRICTS } from "../data/districts";
 import { UNITS } from "../data/units";
 import { useApp } from "../state";
 import { Emblem } from "./Emblem";
 import { MASK } from "../utils/mask";
+import { useTheme } from "../hooks/useTheme";
 
 export function TopBar() {
   const { selectedUnitId, districtFilter, filteredUnits, resetAll } = useApp();
+  const [theme, toggleTheme] = useTheme();
   const selectedUnit = UNITS.find((u) => u.id === selectedUnitId);
 
   const selectionLabel = selectedUnit
@@ -49,8 +51,17 @@ export function TopBar() {
         <StatBlock label="Активный выбор" value={selectionLabel} accent={selectionAccent as string} />
       </div>
 
-      {/* Reset */}
-      <div className="h-full flex items-center px-4 border-l border-[var(--line)]">
+      {/* Theme + Reset */}
+      <div className="h-full flex items-center px-4 gap-1 border-l border-[var(--line)]">
+        <button
+          className="btn btn-ghost"
+          onClick={toggleTheme}
+          title={theme === "dark" ? "Светлая тема" : "Тёмная тема"}
+        >
+          {theme === "dark"
+            ? <Sun size={13} strokeWidth={1.6} />
+            : <Moon size={13} strokeWidth={1.6} />}
+        </button>
         <button
           className="btn btn-ghost"
           onClick={resetAll}

@@ -6,6 +6,7 @@ import * as turf from "@turf/turf";
 import { DISTRICTS, districtsGeoJSON } from "../data/districts";
 import { UNITS } from "../data/units";
 import { useApp } from "../state";
+import { useTheme } from "../hooks/useTheme";
 import type { DistrictCode } from "../types";
 
 function makeMarkerIcon(color: string, label: string, active: boolean, showLabel: boolean) {
@@ -187,6 +188,7 @@ function MarkerClusterLayer({
 
 export function MapView() {
   const { setSelectedUnitId, focus, districtFilter, setDistrictFilter, pushToast } = useApp();
+  const [theme] = useTheme();
   const [zoom, setZoom] = useState(3.2);
   const geoRef = useRef<L.GeoJSON | null>(null);
 
@@ -225,8 +227,13 @@ export function MapView() {
         className="h-full w-full"
       >
         <TileLayer
+          key={theme}
           attribution='&copy; OpenStreetMap &copy; CARTO'
-          url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+          url={
+            theme === "light"
+              ? "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+              : "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+          }
           noWrap={true}
         />
 

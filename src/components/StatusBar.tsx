@@ -24,11 +24,12 @@ export function StatusBar() {
 
 function Chip({ icon: Icon, label, value, accent }: { icon: any; label: string; value: string; accent?: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-slate-700/60 bg-slate-900/80 backdrop-blur px-3 py-1.5 shadow-lg">
-      <Icon size={14} className="text-slate-400" style={accent ? { color: accent } : undefined} />
+    <div className="flex items-center gap-2 rounded-lg border backdrop-blur px-3 py-1.5 shadow-lg"
+         style={{ background: "color-mix(in srgb, var(--panel-2) 85%, transparent)", borderColor: "var(--line-2)" }}>
+      <Icon size={14} style={{ color: accent ?? "var(--text-mute)" }} />
       <div className="flex items-baseline gap-1.5">
-        <span className="text-[10px] uppercase tracking-wider text-slate-500">{label}</span>
-        <span className="text-xs font-semibold text-slate-100">{value}</span>
+        <span className="text-[10px] uppercase tracking-wider" style={{ color: "var(--text-mute)" }}>{label}</span>
+        <span className="text-xs font-semibold" style={{ color: "var(--text)" }}>{value}</span>
       </div>
     </div>
   );
